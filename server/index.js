@@ -26,15 +26,15 @@ app.use(
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/anvaya/v1/", (req, res) => {
   res.json({ message: "Anvaya CRM API is running." });
 });
 
-app.use("/leads", leadsRouter);
-app.use("/leads/:id/comments", commentsRouter);
-app.use("/agents", agentsRouter);
-app.use("/tags", tagsRouter);
-app.use("/report", reportsRouter);
+app.use("/anvaya/v1/leads", leadsRouter);
+app.use("/anvaya/v1/leads/:id/comments", commentsRouter);
+app.use("/anvaya/v1/agents", agentsRouter);
+app.use("/anvaya/v1/tags", tagsRouter);
+app.use("/anvaya/v1/report", reportsRouter);
 
 app.use((req, res) => {
   res
