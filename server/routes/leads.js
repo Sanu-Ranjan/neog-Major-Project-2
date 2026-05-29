@@ -22,6 +22,7 @@ const VALID_SOURCES = [
   "Email",
   "Other",
 ];
+const VALID_PRIORITIES = ["High", "Medium", "Low"];
 
 // create a new lead
 router.post(
@@ -47,7 +48,8 @@ router.post(
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const { salesAgent, status, tags, source, sortBy, order } = req.query;
+    const { salesAgent, status, priority, tags, source, sortBy, order } =
+      req.query;
     const filter = {};
 
     if (status) {
@@ -58,6 +60,15 @@ router.get(
         );
       }
       filter.status = status;
+    }
+    if (priority) {
+      if (!VALID_PRIORITIES.includes(priority)) {
+        throw httpError(
+          400,
+          `Invalid input: 'priority' must be one of [${VALID_PRIORITIES.join(", ")}].`,
+        );
+      }
+      filter.priority = priority;
     }
     if (source) {
       if (!VALID_SOURCES.includes(source)) {
