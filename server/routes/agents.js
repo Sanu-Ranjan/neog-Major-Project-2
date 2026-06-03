@@ -31,4 +31,18 @@ router.get(
   }),
 );
 
+router.delete(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      throw httpError(400, `Invalid agent ID: ${req.params.id}`);
+    }
+    const agent = await SalesAgent.findByIdAndDelete(req.params.id);
+    if (!agent) {
+      throw httpError(404, `Agent with ID '${req.params.id}' not found.`);
+    }
+    res.json({ message: "Agent deleted successfully." });
+  }),
+);
+
 module.exports = router;
