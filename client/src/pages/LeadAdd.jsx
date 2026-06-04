@@ -1,0 +1,105 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { API_ROUTES } from "../constants/apiRoutes";
+import { ROUTES } from "../constants/appRoutes";
+import { useGet } from "../hooks/useGet";
+import { post } from "../api/client";
+import { Sidebar } from "../components/Sidebar";
+
+const STATUSES = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
+const SOURCES = ["Website", "Referral", "Cold Call", "Advertisement", "Email", "Other"];
+const PRIORITIES = ["High", "Medium", "Low"];
+
+export const LeadAdd = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    source: "",
+    salesAgent: "",
+    status: "New",
+    priority: "Medium",
+    timeToClose: "",
+    tags: [],
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const { data: agents } = useGet(API_ROUTES.agents.getAll);
+  const { data: tags } = useGet(API_ROUTES.tags.getAll);
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleTagChange = (e) => {
+    const selected = Array.from(e.target.selectedOptions).map((o) => o.value);
+    setForm({ ...form, tags: selected });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      await post(API_ROUTES.leads.add, form);
+      navigate(ROUTES.LEADS);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="container-fluid">
+      <h5 className="p-3 border-bottom text-center">Add New Lead</h5>
+
+      <Sidebar backTo={ROUTES.DASHBOARD} backLabel="Back to Dashboard">
+        {error && <p className="text-danger">{error}</p>}
+
+        <form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
+          <div className="mb-3">
+            <label className="form-label">Lead Name</label>
+            <input type="text" name="name" className="form-control" value={form.name} onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Lead Source</label>
+            <select name="source" className="form-select" value={form.source} onChange={handleChange} required>
+              <option value="">Select Source</option>
+              {SOURCES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Sales Agent</label>
+            <select name="salesAgent" className="form-select" value={form.salesAgent} onChange={handleChange} required>
+              <option value="">Select Agent</option>
+              {agents.map((a) => <option key={a._id} value={a._id}>{a.name}</option>)}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Lead Status</label>
+            <select name="status" className="form-select" value={form.status} onChange={handleChange}>
+              {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Priority</label>
+            <select name="priority" className="form-select" value={form.priority} onChange={handleChange}>
+              {PRIORITIES.map((p) => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Time to Close (days)</label>
+            <input type="number" name="timeToClose" className="form-control" value={form.timeToClose} onChange={handleChange} min={1} required />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Tags <span className="text-muted small">(hold Ctrl/Cmd to select multiple)</span></label>
+            <select multiple className="form-select" value={form.tags} onChange={handleTagChange}>
+              {tags.map((t) => <option key={t._id} value={t.name}>{t.name}</option>)}
+            </select>
+          </div>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? "Creating..." : "Create Lead"}
+          </button>
+        </form>
+      </Sidebar>
+    </div>
+  );
+};
