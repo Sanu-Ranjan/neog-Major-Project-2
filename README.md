@@ -61,7 +61,7 @@ All endpoints are prefixed with `/anvaya/v1`.
  
 - No authentication — every endpoint is public.
 - No pagination on `GET /leads`. Would be needed at scale.
-- Filter state on the Lead List page lives in component state, not the URL — so filters reset on refresh and can't be shared as bookmarks. (`useSearchParams` migration planned.)
+- Filter state on the Lead List page lives in component state, not the URL, so filters reset on refresh and can't be shared as bookmarks.
 - Comment author defaults to the lead's assigned agent since there's no concept of "logged-in user".
 
 # PRD Checklist
