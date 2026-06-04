@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { API_ROUTES } from "../constants/apiRoutes";
 import { ROUTES } from "../constants/appRoutes";
 import { useGet } from "../hooks/useGet";
@@ -9,14 +8,11 @@ import { LeadRow } from "../components/LeadRow";
 
 export const LeadList = () => {
   const navigate = useNavigate();
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedAgent, setSelectedAgent] = useState("");
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [searchParams] = useSearchParams();
 
   const { data: agents, loading: agentsLoading, error: agentsError } = useGet(API_ROUTES.agents.getAll);
 
-  const leadsUrl = `${API_ROUTES.leads.getAll}?${selectedStatus ? `&status=${selectedStatus}` : ""}${selectedAgent ? `&salesAgent=${selectedAgent}` : ""}&sortBy=${sortBy}&order=${sortOrder}`;
+  const leadsUrl = `${API_ROUTES.leads.getAll}?${searchParams.toString()}`;
   const { data: leads, loading: leadsLoading, error: leadsError } = useGet(leadsUrl);
 
   const loading = agentsLoading || leadsLoading;
@@ -30,18 +26,7 @@ export const LeadList = () => {
       <h5 className="p-3 border-bottom text-center">Lead List</h5>
 
       <Sidebar backTo={ROUTES.DASHBOARD} backLabel="Back to Dashboard">
-        <LeadFilters
-          agents={agents}
-          showPriority={false}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          selectedAgent={selectedAgent}
-          setSelectedAgent={setSelectedAgent}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-        />
+        <LeadFilters agents={agents} showPriority={false} />
 
         {leads.length === 0 ? (
           <p className="text-muted small">No leads found.</p>

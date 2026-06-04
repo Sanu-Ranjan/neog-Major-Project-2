@@ -1,3 +1,5 @@
+import { useSearchParams } from "react-router-dom";
+
 const STATUSES = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
 const PRIORITIES = ["High", "Medium", "Low"];
 
@@ -7,79 +9,72 @@ export const LeadFilters = ({
   showAgent = true,
   showPriority = true,
   showSort = true,
-  selectedStatus,
-  setSelectedStatus,
-  selectedAgent,
-  setSelectedAgent,
-  selectedPriority,
-  setSelectedPriority,
-  sortBy,
-  setSortBy,
-  sortOrder,
-  setSortOrder,
 }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const set = (key, value) => {
+    const next = new URLSearchParams(searchParams);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    setSearchParams(next);
+  };
+
   return (
     <div className="d-flex gap-2 mb-3 align-items-center flex-wrap">
-      {showStatus && setSelectedStatus && (
+      {showStatus && (
         <select
           className="form-select form-select-sm w-auto"
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
+          value={searchParams.get("status") || ""}
+          onChange={(e) => set("status", e.target.value)}
         >
           <option value="">All Statuses</option>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
+          {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       )}
 
-      {showAgent && setSelectedAgent && (
+      {showAgent && (
         <select
           className="form-select form-select-sm w-auto"
-          value={selectedAgent}
-          onChange={(e) => setSelectedAgent(e.target.value)}
+          value={searchParams.get("salesAgent") || ""}
+          onChange={(e) => set("salesAgent", e.target.value)}
         >
           <option value="">All Agents</option>
-          {agents.map((a) => (
-            <option key={a._id} value={a._id}>{a.name}</option>
-          ))}
+          {agents.map((a) => <option key={a._id} value={a._id}>{a.name}</option>)}
         </select>
       )}
 
-      {showPriority && setSelectedPriority && (
+      {showPriority && (
         <select
           className="form-select form-select-sm w-auto"
-          value={selectedPriority}
-          onChange={(e) => setSelectedPriority(e.target.value)}
+          value={searchParams.get("priority") || ""}
+          onChange={(e) => set("priority", e.target.value)}
         >
           <option value="">All Priorities</option>
-          {PRIORITIES.map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
+          {PRIORITIES.map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
       )}
 
-      {showSort && setSortBy && (
-        <select
-          className="form-select form-select-sm w-auto"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="createdAt">Sort by Default</option>
-          <option value="priority">Sort by Priority</option>
-          <option value="timeToClose">Sort by Time to Close</option>
-        </select>
-      )}
+      {showSort && (
+        <>
+          <select
+            className="form-select form-select-sm w-auto"
+            value={searchParams.get("sortBy") || "createdAt"}
+            onChange={(e) => set("sortBy", e.target.value)}
+          >
+            <option value="createdAt">Sort by Default</option>
+            <option value="priority">Sort by Priority</option>
+            <option value="timeToClose">Sort by Time to Close</option>
+          </select>
 
-      {showSort && setSortOrder && (
-        <select
-          className="form-select form-select-sm w-auto"
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
-        >
-          <option value="asc">↑ Asc</option>
-          <option value="desc">↓ Desc</option>
-        </select>
+          <select
+            className="form-select form-select-sm w-auto"
+            value={searchParams.get("order") || "asc"}
+            onChange={(e) => set("order", e.target.value)}
+          >
+            <option value="asc">↑ Asc</option>
+            <option value="desc">↓ Desc</option>
+          </select>
+        </>
       )}
     </div>
   );

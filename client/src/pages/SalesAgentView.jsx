@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { API_ROUTES } from "../constants/apiRoutes";
 import { ROUTES } from "../constants/appRoutes";
 import { useGet } from "../hooks/useGet";
@@ -7,18 +6,13 @@ import { Sidebar } from "../components/Sidebar";
 import { LeadFilters } from "../components/LeadFilters";
 import { LeadRow } from "../components/LeadRow";
 
-const STATUSES = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
-const PRIORITIES = ["High", "Medium", "Low"];
-
 export const SalesAgentView = () => {
   const { agentId } = useParams();
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedPriority, setSelectedPriority] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [searchParams] = useSearchParams();
 
   const { data: agent, loading: agentLoading, error: agentError } = useGet(API_ROUTES.agents.getById(agentId));
 
-  const leadsUrl = `${API_ROUTES.leads.getAll}?salesAgent=${agentId}${selectedStatus ? `&status=${selectedStatus}` : ""}${selectedPriority ? `&priority=${selectedPriority}` : ""}&sortBy=timeToClose&order=${sortOrder}`;
+  const leadsUrl = `${API_ROUTES.leads.getAll}?salesAgent=${agentId}&sortBy=timeToClose&${searchParams.toString()}`;
   const { data: leads, loading: leadsLoading, error: leadsError } = useGet(leadsUrl);
 
   const loading = agentLoading || leadsLoading;
@@ -37,16 +31,7 @@ export const SalesAgentView = () => {
           <span className="text-muted ms-2 fw-normal small">({agent.email})</span>
         </h6>
 
-        <LeadFilters
-          showAgent={false}
-          showSort={false}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          selectedPriority={selectedPriority}
-          setSelectedPriority={setSelectedPriority}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-        />
+        <LeadFilters showAgent={false} showSort={false} />
 
         {leads.length === 0 ? (
           <p className="text-muted small">No leads found.</p>
