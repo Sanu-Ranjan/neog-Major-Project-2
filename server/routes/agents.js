@@ -2,7 +2,7 @@ const express = require("express");
 const SalesAgent = require("../models/SalesAgent");
 const asyncHandler = require("../middleware/asyncHandler");
 const { httpError } = require("../middleware/errorHandler");
-
+const mongoose = require("mongoose");
 const router = express.Router();
 
 router.post(
