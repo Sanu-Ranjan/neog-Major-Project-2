@@ -24,7 +24,8 @@ const VALID_SOURCES = [
 ];
 const VALID_PRIORITIES = ["High", "Medium", "Low"];
 
-// create a new lead
+const PRIORITY_RANK = { High: 1, Medium: 2, Low: 3 };
+
 router.post(
   "/",
   asyncHandler(async (req, res) => {
@@ -44,7 +45,6 @@ router.post(
   }),
 );
 
-//  list with optional filters
 router.get(
   "/",
   asyncHandler(async (req, res) => {
@@ -86,17 +86,61 @@ router.get(
       filter.salesAgent = salesAgent;
     }
     if (tags) {
-      //leads/?tags=A&tags=B&tags=C
-      // req.query.tags = ""
       const tagList = Array.isArray(tags) ? tags : tags.split(",");
       filter.tags = { $in: tagList };
     }
 
-    // Sorting
     const sortField = sortBy || "createdAt";
     const sortOrder = order === "asc" ? 1 : -1;
-    const sort = { [sortField]: sortOrder };
 
+    if (sortField === "priority") {
+      const leads = await Lead.aggregate([
+        { $match: filter },
+        {
+          $addFields: {
+            priorityRank: {
+              $switch: {
+                branches: [
+                  {
+                    case: { $eq: ["$priority", "High"] },
+                    then: PRIORITY_RANK.High,
+                  },
+                  {
+                    case: { $eq: ["$priority", "Medium"] },
+                    then: PRIORITY_RANK.Medium,
+                  },
+                  {
+                    case: { $eq: ["$priority", "Low"] },
+                    then: PRIORITY_RANK.Low,
+                  },
+                ],
+                default: 99,
+              },
+            },
+          },
+        },
+        { $sort: { priorityRank: sortOrder } },
+        {
+          $lookup: {
+            from: "salesagents",
+            localField: "salesAgent",
+            foreignField: "_id",
+            as: "salesAgent",
+          },
+        },
+        { $unwind: { path: "$salesAgent", preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            priorityRank: 0,
+            "salesAgent.createdAt": 0,
+            "salesAgent.__v": 0,
+          },
+        },
+      ]);
+      return res.json(leads);
+    }
+
+    const sort = { [sortField]: sortOrder };
     const leads = await Lead.find(filter)
       .populate("salesAgent", "name email")
       .sort(sort);
