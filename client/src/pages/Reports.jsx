@@ -15,6 +15,17 @@ import { Sidebar } from "../components/Sidebar";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
+const chartOptions = { responsive: true, maintainAspectRatio: false };
+
+const ChartCard = ({ title, children }) => (
+  <div className="card h-100">
+    <div className="card-body">
+      <h6 className="card-title">{title}</h6>
+      <div style={{ position: "relative", height: 300 }}>{children}</div>
+    </div>
+  </div>
+);
+
 export const Reports = () => {
   const { data: closedByAgent, loading: l1, error: e1 } = useGet(API_ROUTES.reports.closedByAgent);
   const { data: statusDist,    loading: l2, error: e2 } = useGet(API_ROUTES.reports.statusDistribution);
@@ -24,8 +35,8 @@ export const Reports = () => {
   const loading = l1 || l2 || l3 || l4;
   const error = e1 || e2 || e3 || e4;
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-danger">Error: {error}</p>;
+  if (loading) return <p className="p-3">Loading...</p>;
+  if (error) return <p className="p-3 text-danger">Error: {error}</p>;
 
   const barData = {
     labels: closedByAgent.map((a) => a.agentName),
@@ -66,25 +77,41 @@ export const Reports = () => {
       <h5 className="p-3 border-bottom text-center">Reports</h5>
 
       <Sidebar backTo={ROUTES.DASHBOARD} backLabel="Back to Dashboard">
-        <h6 className="mb-3">Closed Leads by Agent</h6>
-        <div className="mb-5" style={{ maxWidth: 600 }}><Bar data={barData} /></div>
+        <div className="row g-3">
+          <div className="col-12 col-lg-6">
+            <ChartCard title="Closed Leads by Agent">
+              <Bar data={barData} options={chartOptions} />
+            </ChartCard>
+          </div>
 
-        <h6 className="mb-3">Closed vs In Pipeline</h6>
-        <div className="mb-5" style={{ maxWidth: 350 }}><Pie data={closedVsPipelineData} /></div>
+          <div className="col-12 col-lg-6">
+            <ChartCard title="Pipeline by Status">
+              <Bar data={pipelineData} options={chartOptions} />
+            </ChartCard>
+          </div>
 
-        <h6 className="mb-3">Status Distribution</h6>
-        <div className="mb-5" style={{ maxWidth: 350 }}><Pie data={statusDistData} /></div>
+          <div className="col-12 col-lg-6">
+            <ChartCard title="Closed Last 7 Days by Agent">
+              {lastWeek.length === 0 ? (
+                <p className="text-muted small">No leads closed in the last 7 days.</p>
+              ) : (
+                <Bar data={lastWeekData} options={chartOptions} />
+              )}
+            </ChartCard>
+          </div>
 
-        <h6 className="mb-3">Closed Last 7 Days by Agent</h6>
-        <div className="mb-5" style={{ maxWidth: 600 }}>
-          {lastWeek.length === 0
-            ? <p className="text-muted small">No leads closed in the last 7 days.</p>
-            : <Bar data={lastWeekData} />
-          }
+          <div className="col-12 col-lg-6">
+            <ChartCard title="Closed vs In Pipeline">
+              <Pie data={closedVsPipelineData} options={chartOptions} />
+            </ChartCard>
+          </div>
+
+          <div className="col-12 col-lg-6">
+            <ChartCard title="Status Distribution">
+              <Pie data={statusDistData} options={chartOptions} />
+            </ChartCard>
+          </div>
         </div>
-
-        <h6 className="mb-3">Pipeline by Status</h6>
-        <div style={{ maxWidth: 600 }}><Bar data={pipelineData} /></div>
       </Sidebar>
     </div>
   );

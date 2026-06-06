@@ -27,35 +27,60 @@ export const Dashboard = () => {
           <p>Loading...</p>
         ) : (
           <>
-            <h6 className="mb-2">Recent Leads</h6>
-            <div className="d-flex gap-2 mb-4 flex-wrap">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h6 className="mb-0">Recent Leads</h6>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => navigate(ROUTES.LEAD_NEW)}
+              >
+                + Add New Lead
+              </button>
+            </div>
+
+            <div className="row g-3 mb-4">
               {recentLeads.slice(0, 3).map((lead) => (
-                <div
-                  key={lead._id}
-                  className="border rounded p-2"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(ROUTES.LEAD_DETAIL(lead._id))}
-                >
-                  <div className="fw-semibold">{lead.name}</div>
-                  <div className="small text-muted">{lead.status}</div>
+                <div className="col-12 col-md-4" key={lead._id}>
+                  <div
+                    className="card h-100"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(ROUTES.LEAD_DETAIL(lead._id))}
+                  >
+                    <div className="card-body">
+                      <div className="fw-semibold mb-1">{lead.name}</div>
+                      <span className="badge bg-secondary">{lead.status}</span>
+                      <div className="small text-muted mt-2">
+                        {lead.salesAgent?.name} · {lead.priority} priority
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
 
-            <h6 className="mb-2">Lead Status</h6>
-            <div className="mb-4">
+            <h6 className="mb-3">Lead Status</h6>
+            <div className="row g-3 mb-4">
               {STATUSES.map((status) => {
                 const found = pipeline.find((p) => p.status === status);
                 return (
-                  <div key={status} className="border-bottom py-1">
-                    {status}: <strong>{found ? found.count : 0}</strong> Leads
+                  <div className="col-6 col-md" key={status}>
+                    <div
+                      className="card h-100"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(ROUTES.LEADS_BY_STATUS(status))}
+                    >
+                      <div className="card-body text-center">
+                        <div className="text-muted small">{status}</div>
+                        <div className="fs-3 fw-bold">{found ? found.count : 0}</div>
+                        <div className="small text-secondary">leads</div>
+                      </div>
+                    </div>
                   </div>
                 );
               })}
             </div>
 
-            <h6 className="mb-2">Quick Filters</h6>
-            <div className="d-flex gap-2 mb-4 flex-wrap">
+            <h6 className="mb-3">Quick Filters</h6>
+            <div className="d-flex gap-2 flex-wrap">
               {STATUSES.map((status) => (
                 <button
                   key={status}
@@ -66,10 +91,6 @@ export const Dashboard = () => {
                 </button>
               ))}
             </div>
-
-            <button className="btn btn-primary" onClick={() => navigate(ROUTES.LEAD_NEW)}>
-              + Add New Lead
-            </button>
           </>
         )}
       </DashboardSidebar>
