@@ -15,7 +15,7 @@ A full-stack CRM for managing sales leads through a defined pipeline. Built as a
 - Sales agents directory (with delete)
 - Comments / activity log per lead (with author + timestamp)
 - Path-based URL routing for status and agent views (`/leads/status/:status`, `/leads/by-agent/:agentId`)
-- Filterable & sortable lead list (status, agent, source, priority, sort by field + order)
+- Filterable & sortable lead list reurned from backend by (status, agent, source, priority, sort by field + order)
 - Grouped views (leads by status, leads by sales agent)
 - Settings page — search and delete agents or leads
 - Reports dashboard with 5 visualizations:
