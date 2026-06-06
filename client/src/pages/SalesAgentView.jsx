@@ -10,9 +10,17 @@ export const SalesAgentView = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { data: agent, loading: agentLoading, error: agentError } = useGet(API_ROUTES.agents.getById(agentId));
-  const leadsUrl = `${API_ROUTES.leads.getAll}?salesAgent=${agentId}&sortBy=timeToClose&${searchParams.toString()}`;
-  const { data: leads, loading: leadsLoading, error: leadsError } = useGet(leadsUrl);
+  const {
+    data: agent,
+    loading: agentLoading,
+    error: agentError,
+  } = useGet(API_ROUTES.agents.getById(agentId));
+  const leadsUrl = `${API_ROUTES.leads.getAll}?salesAgent=${agentId}&${searchParams.toString()}`;
+  const {
+    data: leads,
+    loading: leadsLoading,
+    error: leadsError,
+  } = useGet(leadsUrl);
 
   const loading = agentLoading || leadsLoading;
   const error = agentError || leadsError;
@@ -45,7 +53,11 @@ export const SalesAgentView = () => {
               </thead>
               <tbody>
                 {leads.length === 0 ? (
-                  <tr><td colSpan={4} className="text-muted text-center py-3">No leads found.</td></tr>
+                  <tr>
+                    <td colSpan={4} className="text-muted text-center py-3">
+                      No leads found.
+                    </td>
+                  </tr>
                 ) : (
                   leads.map((lead) => (
                     <tr
@@ -54,7 +66,11 @@ export const SalesAgentView = () => {
                       onClick={() => navigate(ROUTES.LEAD_DETAIL(lead._id))}
                     >
                       <td className="fw-semibold">{lead.name}</td>
-                      <td><span className="badge bg-secondary">{lead.status}</span></td>
+                      <td>
+                        <span className="badge bg-secondary">
+                          {lead.status}
+                        </span>
+                      </td>
                       <td>{lead.priority}</td>
                       <td>{lead.timeToClose} days</td>
                     </tr>

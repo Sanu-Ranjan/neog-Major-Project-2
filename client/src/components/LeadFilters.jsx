@@ -19,6 +19,18 @@ export const LeadFilters = ({
     setSearchParams(next);
   };
 
+  const setSortBy = (value) => {
+    const next = new URLSearchParams(searchParams);
+    if (value) {
+      next.set("sortBy", value);
+      if (!next.get("order")) next.set("order", "asc");
+    } else {
+      next.delete("sortBy");
+      next.delete("order");
+    }
+    setSearchParams(next);
+  };
+
   return (
     <div className="d-flex gap-2 mb-3 align-items-center flex-wrap">
       {showStatus && (
@@ -28,7 +40,11 @@ export const LeadFilters = ({
           onChange={(e) => set("status", e.target.value)}
         >
           <option value="">All Statuses</option>
-          {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
       )}
 
@@ -39,7 +55,11 @@ export const LeadFilters = ({
           onChange={(e) => set("salesAgent", e.target.value)}
         >
           <option value="">All Agents</option>
-          {agents.map((a) => <option key={a._id} value={a._id}>{a.name}</option>)}
+          {agents.map((a) => (
+            <option key={a._id} value={a._id}>
+              {a.name}
+            </option>
+          ))}
         </select>
       )}
 
@@ -50,7 +70,11 @@ export const LeadFilters = ({
           onChange={(e) => set("priority", e.target.value)}
         >
           <option value="">All Priorities</option>
-          {PRIORITIES.map((p) => <option key={p} value={p}>{p}</option>)}
+          {PRIORITIES.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
         </select>
       )}
 
@@ -58,22 +82,24 @@ export const LeadFilters = ({
         <>
           <select
             className="form-select form-select-sm w-auto"
-            value={searchParams.get("sortBy") || "createdAt"}
-            onChange={(e) => set("sortBy", e.target.value)}
+            value={searchParams.get("sortBy") || ""}
+            onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="createdAt">Sort by Default</option>
+            <option value="">Sort by None</option>
             <option value="priority">Sort by Priority</option>
             <option value="timeToClose">Sort by Time to Close</option>
           </select>
 
-          <select
-            className="form-select form-select-sm w-auto"
-            value={searchParams.get("order") || "asc"}
-            onChange={(e) => set("order", e.target.value)}
-          >
-            <option value="asc">↑ Asc</option>
-            <option value="desc">↓ Desc</option>
-          </select>
+          {searchParams.get("sortBy") && (
+            <select
+              className="form-select form-select-sm w-auto"
+              value={searchParams.get("order") || "asc"}
+              onChange={(e) => set("order", e.target.value)}
+            >
+              <option value="asc">↑ Asc</option>
+              <option value="desc">↓ Desc</option>
+            </select>
+          )}
         </>
       )}
     </div>

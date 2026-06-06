@@ -10,9 +10,17 @@ export const LeadStatus = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { data: agents, loading: agentsLoading, error: agentsError } = useGet(API_ROUTES.agents.getAll);
-  const leadsUrl = `${API_ROUTES.leads.getAll}?status=${status}&sortBy=timeToClose&${searchParams.toString()}`;
-  const { data: leads, loading: leadsLoading, error: leadsError } = useGet(leadsUrl);
+  const {
+    data: agents,
+    loading: agentsLoading,
+    error: agentsError,
+  } = useGet(API_ROUTES.agents.getAll);
+  const leadsUrl = `${API_ROUTES.leads.getAll}?status=${status}&${searchParams.toString()}`;
+  const {
+    data: leads,
+    loading: leadsLoading,
+    error: leadsError,
+  } = useGet(leadsUrl);
 
   const loading = agentsLoading || leadsLoading;
   const error = agentsError || leadsError;
@@ -44,7 +52,11 @@ export const LeadStatus = () => {
               </thead>
               <tbody>
                 {leads.length === 0 ? (
-                  <tr><td colSpan={4} className="text-muted text-center py-3">No leads found.</td></tr>
+                  <tr>
+                    <td colSpan={4} className="text-muted text-center py-3">
+                      No leads found.
+                    </td>
+                  </tr>
                 ) : (
                   leads.map((lead) => (
                     <tr
