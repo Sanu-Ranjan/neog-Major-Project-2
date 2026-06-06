@@ -83,7 +83,7 @@ router.get(
       if (!mongoose.Types.ObjectId.isValid(salesAgent)) {
         throw httpError(400, `Invalid salesAgent ID: ${salesAgent}`);
       }
-      filter.salesAgent = salesAgent;
+      filter.salesAgent = new mongoose.Types.ObjectId(salesAgent);
     }
     if (tags) {
       const tagList = Array.isArray(tags) ? tags : tags.split(",");
