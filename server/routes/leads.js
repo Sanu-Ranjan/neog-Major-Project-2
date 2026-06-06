@@ -24,7 +24,7 @@ const VALID_SOURCES = [
 ];
 const VALID_PRIORITIES = ["High", "Medium", "Low"];
 
-const PRIORITY_RANK = { High: 1, Medium: 2, Low: 3 };
+const PRIORITY_RANK = { High: 3, Medium: 2, Low: 1 };
 
 router.post(
   "/",
