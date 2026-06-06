@@ -9,13 +9,13 @@ A full-stack CRM for managing sales leads through a defined pipeline. Built as a
 - **Database:** MongoDB (self-hosted on VPS)
 - **Infrastructure:** Hostinger VPS (Ubuntu LTS), Nginx reverse proxy, PM2, Let's Encrypt via Certbot
 - **CI/CD:** GitHub Actions — auto-deploys on push to `main`
-## Features
+## Combined Features
  
 - Lead CRUD with assignment, status workflow, priority, tags, time-to-close
 - Sales agents directory (with delete)
 - Comments / activity log per lead (with author + timestamp)
 - Path-based URL routing for status and agent views (`/leads/status/:status`, `/leads/by-agent/:agentId`)
-- Filterable & sortable lead list (status, agent, source, priority, sort by field + order)
+- Filterable & sortable lead list by (status, agent, priority, sort by field + order)
 - Grouped views (leads by status, leads by sales agent)
 - Settings page — search and delete agents or leads
 - Reports dashboard with 5 visualizations:
@@ -117,7 +117,7 @@ All endpoints are prefixed with `/anvaya/v1`.
 - [x] Sales Agent Management (list)
 - [x] Add New Agent
 - [x] Lead Status View (grouped by status)
-- [x] Sales Agent View (grouped by agent)
+- [x] Sales Agent View 
 - [x] Reports
 - [x] Settings (search + delete agents/leads)
 
