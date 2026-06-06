@@ -117,7 +117,7 @@ All endpoints are prefixed with `/anvaya/v1`.
 - [x] Sales Agent Management (list)
 - [x] Add New Agent
 - [x] Lead Status View (grouped by status)
-- [x] Sales Agent View (grouped by agent)
+- [x] Sales Agent View 
 - [x] Reports
 - [x] Settings (search + delete agents/leads)
 
