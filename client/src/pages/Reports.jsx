@@ -9,9 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { API_ROUTES } from "../constants/apiRoutes";
-import { ROUTES } from "../constants/appRoutes";
 import { useGet } from "../hooks/useGet";
-import { Sidebar } from "../components/Sidebar";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
@@ -73,46 +71,39 @@ export const Reports = () => {
   };
 
   return (
-    <div className="container-fluid">
-      <h5 className="p-3 border-bottom text-center">Reports</h5>
-
-      <Sidebar backTo={ROUTES.DASHBOARD} backLabel="Back to Dashboard">
-        <div className="row g-3">
-          <div className="col-12 col-lg-6">
-            <ChartCard title="Closed Leads by Agent">
-              <Bar data={barData} options={chartOptions} />
-            </ChartCard>
-          </div>
-
-          <div className="col-12 col-lg-6">
-            <ChartCard title="Pipeline by Status">
-              <Bar data={pipelineData} options={chartOptions} />
-            </ChartCard>
-          </div>
-
-          <div className="col-12 col-lg-6">
-            <ChartCard title="Closed Last 7 Days by Agent">
-              {lastWeek.length === 0 ? (
-                <p className="text-muted small">No leads closed in the last 7 days.</p>
-              ) : (
-                <Bar data={lastWeekData} options={chartOptions} />
-              )}
-            </ChartCard>
-          </div>
-
-          <div className="col-12 col-lg-6">
-            <ChartCard title="Closed vs In Pipeline">
-              <Pie data={closedVsPipelineData} options={chartOptions} />
-            </ChartCard>
-          </div>
-
-          <div className="col-12 col-lg-6">
-            <ChartCard title="Status Distribution">
-              <Pie data={statusDistData} options={chartOptions} />
-            </ChartCard>
-          </div>
+    <div className="p-3">
+      <h5 className="mb-4">Reports</h5>
+      <div className="row g-3">
+        <div className="col-12 col-lg-6">
+          <ChartCard title="Closed Leads by Agent">
+            <Bar data={barData} options={chartOptions} />
+          </ChartCard>
         </div>
-      </Sidebar>
+        <div className="col-12 col-lg-6">
+          <ChartCard title="Pipeline by Status">
+            <Bar data={pipelineData} options={chartOptions} />
+          </ChartCard>
+        </div>
+        <div className="col-12 col-lg-6">
+          <ChartCard title="Closed Last 7 Days by Agent">
+            {lastWeek.length === 0 ? (
+              <p className="text-muted small">No leads closed in the last 7 days.</p>
+            ) : (
+              <Bar data={lastWeekData} options={chartOptions} />
+            )}
+          </ChartCard>
+        </div>
+        <div className="col-12 col-lg-6">
+          <ChartCard title="Closed vs In Pipeline">
+            <Pie data={closedVsPipelineData} options={chartOptions} />
+          </ChartCard>
+        </div>
+        <div className="col-12 col-lg-6">
+          <ChartCard title="Status Distribution">
+            <Pie data={statusDistData} options={chartOptions} />
+          </ChartCard>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { ROUTES } from "../constants/appRoutes";
 
 const links = [
@@ -9,11 +9,11 @@ const links = [
   { label: "Settings", route: ROUTES.SETTINGS },
 ];
 
-export const DashboardSidebar = ({ children }) => {
+export const Layout = () => {
   return (
     <>
-      {/* Mobile top nav */}
-      <nav className="d-flex d-md-none gap-2 p-2 border-bottom overflow-auto">
+      {/* Mobile top nav — outside the grid */}
+      <nav className="d-flex d-md-none gap-2 p-2 border-bottom overflow-auto flex-wrap">
         {links.map((l) => (
           <NavLink
             key={l.label}
@@ -28,10 +28,10 @@ export const DashboardSidebar = ({ children }) => {
         ))}
       </nav>
 
-      <div className="row g-0">
+      <div className="row g-0" style={{ minHeight: "100vh" }}>
         {/* Desktop sidebar */}
         <div
-          className="col-md-2 d-none d-md-flex flex-column border-end"
+          className="col-md-2 d-none d-md-flex flex-column border-end bg-light"
           style={{ minHeight: "100vh" }}
         >
           <div className="px-4 py-4 border-bottom">
@@ -64,7 +64,9 @@ export const DashboardSidebar = ({ children }) => {
         </div>
 
         {/* Main content */}
-        <div className="col-12 col-md-10 p-3">{children}</div>
+        <div className="col-12 col-md-10">
+          <Outlet />
+        </div>
       </div>
     </>
   );
