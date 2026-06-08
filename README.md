@@ -142,20 +142,20 @@ All endpoints are prefixed with `/anvaya/v1`.
 - [x] MongoDB on VPS (localhost-bound, SSH tunnel for dev)
 - [x] CI/CD via GitHub Actions (auto-deploy on push to main)
 
-## Screenshots
+## Some Screenshots
 - Dashboard 
-<img width="1901" height="622" alt="image" src="https://github.com/user-attachments/assets/7399d242-5a78-4340-9378-ab341d4388ed" />
-
-- Leads by status
-<img width="1895" height="664" alt="image" src="https://github.com/user-attachments/assets/8257a27e-ab41-4f08-8274-590ea1257b59" />
+<img width="1919" height="942" alt="image" src="https://github.com/user-attachments/assets/51a76370-8eee-4b03-9915-0266285f1307" />
 
 - Lead List
-<img width="1903" height="739" alt="image" src="https://github.com/user-attachments/assets/fb6e4e2a-0d29-4699-b038-7489691c98cd" />
-
-- Reports
-<img width="1890" height="906" alt="image" src="https://github.com/user-attachments/assets/4820de73-d89c-41aa-ada3-107c61ce82cb" />
+<img width="1916" height="944" alt="image" src="https://github.com/user-attachments/assets/9a1044be-7c78-427e-b114-da03cee8f837" />
 
 - Sales Agents
-<img width="1893" height="524" alt="image" src="https://github.com/user-attachments/assets/6066dd47-aaf2-495a-a34d-92b867112585" />
+<img width="1919" height="942" alt="image" src="https://github.com/user-attachments/assets/78f43b59-5cfe-4c73-b780-f15210d790fc" />
+
+- Reports
+<img width="1919" height="939" alt="image" src="https://github.com/user-attachments/assets/5ab896e4-a0a7-4790-9a53-9e34160e94b3" />
+
+- Settings
+<img width="1919" height="942" alt="image" src="https://github.com/user-attachments/assets/610b84f3-777f-4114-958d-a26234c38979" />
 
 
