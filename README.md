@@ -6,7 +6,7 @@ A full-stack CRM for managing sales leads through a defined pipeline. Built to d
 
 ## Demo Link
 
-[https://crm.devranjan.cloud/]()
+[Live Demo](https://crm.devranjan.cloud/)
 
 ---
 
@@ -14,7 +14,7 @@ A full-stack CRM for managing sales leads through a defined pipeline. Built to d
 
 Watch a walkthrough of all major features:
 
-[https://drive.google.com/file/d/1dTpiMd2fwtaIA9yHki-5L2Kt9Ri7gwGY/view?usp=sharing]()
+[Video Link](https://drive.google.com/file/d/1dTpiMd2fwtaIA9yHki-5L2Kt9Ri7gwGY/view?usp=sharing)
 
 ---
 
