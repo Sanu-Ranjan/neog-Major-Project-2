@@ -1,22 +1,63 @@
 # Anvaya CRM
- 
-A full-stack CRM for managing sales leads through a defined pipeline. Built as a portfolio project to demonstrate relational data modeling in MongoDB, MongoDB aggregation for reporting, Chart.js data visualization, and self-hosted deployment on a VPS.
- 
+
+A full-stack CRM for managing sales leads through a defined pipeline. Built to demonstrate relational data modeling in MongoDB, aggregation-based reporting, URL-driven filtering, and self-hosted VPS deployment.
+
+---
+
+## Demo Link
+
+[https://crm.devranjan.cloud/]()
+
+---
+
+## Demo Video
+
+Watch a walkthrough of all major features:
+
+[https://drive.google.com/file/d/1dTpiMd2fwtaIA9yHki-5L2Kt9Ri7gwGY/view?usp=sharing]()
+
+---
+
+## Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/Sanu-Ranjan/neog-Major-Project-2.git
+cd neog-Major-Project-2
+
+# Backend
+cd server
+cp .env.example .env      # fill in your MONGO_URI and ALLOWED_ORIGINS
+npm install
+npm run seed              # populate demo data
+npm run dev               # starts on http://localhost:3000
+
+# Frontend
+cd ../client
+npm install
+npm run dev               # starts on http://localhost:5173
+```
+
+---
+
 ## Tech Stack
- 
-- **Frontend:** React 19, React Router 7, Bootstrap 5 (via CDN), Chart.js + react-chartjs-2, native `fetch`
+
+- **Frontend:** React 19, React Router 7, Bootstrap 5 (CDN), Chart.js + react-chartjs-2, native fetch
 - **Backend:** Node.js, Express 4, Mongoose 8
 - **Database:** MongoDB (self-hosted on VPS)
-- **Infrastructure:** Hostinger VPS (Ubuntu LTS), Nginx reverse proxy, PM2, Let's Encrypt via Certbot
+- **Infrastructure:** Hostinger VPS (Ubuntu LTS), Nginx, PM2, Let's Encrypt via Certbot
 - **CI/CD:** GitHub Actions — auto-deploys on push to `main`
+
+---
+
 ## Combined Features
- 
+
 - Lead CRUD with assignment, status workflow, priority, tags, time-to-close
 - Sales agents directory (with delete)
 - Comments / activity log per lead (with author + timestamp)
 - Path-based URL routing for status and agent views (`/leads/status/:status`, `/leads/by-agent/:agentId`)
-- Filterable & sortable lead list by (status, agent, priority, sort by field + order)
-- Grouped views (leads by status, leads by sales agent)
+- Filterable and sortable lead list by status, agent, priority, sort field and order
+- Grouped views — leads by status, leads by sales agent
 - Settings page — search and delete agents or leads
 - Reports dashboard with 5 visualizations:
   - Closed leads by sales agent (bar)
@@ -24,123 +65,69 @@ A full-stack CRM for managing sales leads through a defined pipeline. Built as a
   - Lead status distribution (pie)
   - Closed in last 7 days by agent (bar)
   - Pipeline by status (bar)
-- Auto-set `closedAt` when a lead's status flips to `Closed` (via Mongoose `pre('save')` hook)
+- Auto-set `closedAt` when a lead's status flips to Closed via Mongoose `pre('save')` hook
+
+---
+
 ## API Quick Reference
- 
+
 All endpoints are prefixed with `/anvaya/v1`.
- 
-| Method | Endpoint                     | Description                          |
-|--------|------------------------------|--------------------------------------|
-| GET    | `/leads`                     | List leads (filters: `status`, `salesAgent`, `source`, `priority`, `tags`, `sortBy`, `order`) |
-| POST   | `/leads`                     | Create a lead                        |
-| GET    | `/leads/:id`                 | Get a single lead                    |
-| PATCH  | `/leads/:id`                 | Partial update                       |
-| DELETE | `/leads/:id`                 | Delete                               |
-| GET    | `/leads/:id/comments`        | List comments for a lead             |
-| POST   | `/leads/:id/comments`        | Add a comment                        |
-| GET    | `/agents`                    | List sales agents                    |
-| POST   | `/agents`                    | Create agent                         |
-| GET    | `/agents/:id`                | Get a single agent                   |
-| DELETE | `/agents/:id`                | Delete an agent                      |
-| GET    | `/tags`                      | List tags                            |
-| POST   | `/tags`                      | Create tag                           |
-| GET    | `/report/last-week`          | Leads closed in the last 7 days      |
-| GET    | `/report/pipeline`           | Pipeline counts grouped by status    |
-| GET    | `/report/closed-by-agent`    | Closed counts grouped by agent       |
-| GET    | `/report/status-distribution`| All statuses with counts             |
- 
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/leads` | List leads (filters: status, salesAgent, source, priority, tags, sortBy, order) |
+| POST | `/leads` | Create a lead |
+| GET | `/leads/:id` | Get a single lead |
+| PATCH | `/leads/:id` | Partial update |
+| DELETE | `/leads/:id` | Delete |
+| GET | `/leads/:id/comments` | List comments for a lead |
+| POST | `/leads/:id/comments` | Add a comment |
+| GET | `/agents` | List sales agents |
+| POST | `/agents` | Create agent |
+| GET | `/agents/:id` | Get a single agent |
+| DELETE | `/agents/:id` | Delete an agent |
+| GET | `/tags` | List tags |
+| POST | `/tags` | Create tag |
+| GET | `/report/last-week` | Leads closed in the last 7 days |
+| GET | `/report/pipeline` | Pipeline counts grouped by status |
+| GET | `/report/closed-by-agent` | Closed counts grouped by agent |
+| GET | `/report/status-distribution` | All statuses with counts |
+
+---
+
 ## Design Decisions
- 
-- PATCH over PUT for lead updates. PATCH matches the actual use case where you usually update only a status or an agent.
-- closedAt auto-set via a Mongoose `pre('save')` hook. Without this, the "closed last week" report can't work. The hook also clears `closedAt` if the status moves back away from Closed.
-- findById + .save() in PATCH route** (not findByIdAndUpdate) so the pre('save') hook actually fires — findByIdAndUpdate skips middleware.
-- Aggregation pipelines for reports rather than fetching everything and reducing client-side. /report/closed-by-agent uses `$match` → `$group` → `$lookup` → `$unwind` → `$project` → `$sort`.
-- Central error-handler middleware maps Mongoose validation, cast, and duplicate-key errors to clean HTTP responses, eliminating try/catch in every route.
-- asyncHandler wrapper lets every route use async/await without wrapping the body in try/catch.
-## Known Limitations (a.k.a. "Future Work")
- 
-- No authentication — every endpoint is public.
-- No pagination on `GET /leads`. Would be needed at scale.
-- Filter state on the Lead List page lives in component state, not the URL, so filters reset on refresh and can't be shared as bookmarks.
-- Comment author defaults to the lead's assigned agent since there's no concept of "logged-in user".
 
-# PRD Checklist
-
-## Data Models
-
-- [x] Lead model (name, source, salesAgent ref, status, tags, timeToClose, priority, timestamps, closedAt)
-- [x] Sales Agent model (name, unique email)
-- [x] Comment model (lead ref, author ref, commentText, createdAt)
-- [x] Tag model (unique name)
-- [x] Auto-update `updatedAt` on save
-- [x] Auto-set `closedAt` when status becomes Closed
+- **PATCH over PUT** — matches the actual use case where you update only a status or an agent
+- **`closedAt` auto-set** via Mongoose `pre('save')` hook — without this the closed-last-week report has no field to query. The hook also clears `closedAt` if status moves back from Closed
+- **`findById` + `.save()`** in the PATCH route instead of `findByIdAndUpdate` — so the `pre('save')` hook actually fires
+- **Aggregation pipelines** for reports — `/report/closed-by-agent` uses `$match` → `$group` → `$lookup` → `$unwind` → `$project` → `$sort`
+- **Central error-handler middleware** — maps Mongoose validation, cast, and duplicate-key errors to clean HTTP responses, eliminating try/catch in every route
+- **`asyncHandler` wrapper** — lets every route use async/await without wrapping in try/catch
+- **URL-driven filtering** — filters live in the browser URL via `useSearchParams`, making them shareable and refresh-safe
 
 ---
 
-## Backend API
+## Known Limitations
 
-### Leads
-- [x] POST /leads — create a lead
-- [x] GET /leads — list with filters (status, salesAgent, source, priority, tags, sortBy, order)
-- [x] GET /leads/:id — get a single lead
-- [x] PATCH /leads/:id — update a lead
-- [x] DELETE /leads/:id — delete a lead
-
-### Sales Agents
-- [x] POST /agents — create a sales agent
-- [x] GET /agents — list all sales agents
-- [x] GET /agents/:id — get a single sales agent
-- [x] DELETE /agents/:id — delete a sales agent
-
-### Comments
-- [x] POST /leads/:id/comments — add a comment to a lead
-- [x] GET /leads/:id/comments — list comments for a lead
-
-### Tags
-- [x] POST /tags — create a tag
-- [x] GET /tags — list all tags
-
-### Reports
-- [x] GET /report/last-week — leads closed in the last 7 days
-- [x] GET /report/pipeline — pipeline totals grouped by status
-- [x] GET /report/closed-by-agent — closed counts grouped by agent
-- [x] GET /report/status-distribution — counts of leads in every status
+- No authentication — every endpoint is public
+- No pagination on `GET /leads` — would be needed at scale
+- Comment author defaults to the lead's assigned agent since there is no logged-in user concept
 
 ---
 
-## Frontend Screens
+## Feature Checklist
 
-- [x] Dashboard
-- [x] Lead Management (detail view with edit + comments)
-- [x] Lead List (with filters and sorting)
-- [x] Add New Lead
-- [x] Sales Agent Management (list)
-- [x] Add New Agent
-- [x] Lead Status View (grouped by status)
-- [x] Sales Agent View 
-- [x] Reports
-- [x] Settings (search + delete agents/leads)
+A full interactive checklist of every feature verified against the running app:
+
+[CHECKLIST.md](./CHECKLIST.md)
+
+Interactive version: [https://vn7mr9.csb.app/](https://vn7mr9.csb.app/)
 
 ---
 
-## Reports & Visualizations
+## Contact
 
-- [x] Leads Closed Last Week (bar chart, grouped by sales agent)
-- [x] Total Leads in Pipeline (bar chart by status)
-- [x] Leads by Sales Agent (bar chart of closed counts)
-- [x] Lead Status Distribution (pie chart)
-- [x] Closed vs In Pipeline (pie chart)
-
----
-
-## Deployment & Infrastructure
-
-- [x] Self-hosted on VPS (Hostinger, Ubuntu LTS)
-- [x] Nginx reverse proxy
-- [x] PM2 process manager
-- [x] HTTPS via Let's Encrypt (Certbot)
-- [x] MongoDB on VPS (localhost-bound, SSH tunnel for dev)
-- [x] CI/CD via GitHub Actions (auto-deploy on push to main)
+For bugs or feature requests, reach out at [ranjan.code33@gmail.com]()
 
 ## Some Screenshots
 - Dashboard 
