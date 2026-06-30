@@ -22,8 +22,8 @@ Watch a walkthrough of all major features:
 
 ```bash
 # Clone the repo
-git clone https://github.com/Sanu-Ranjan/neog-Major-Project-2.git
-cd neog-Major-Project-2
+git clone https://github.com/Sanu-Ranjan/Anvaya-CRM.git
+cd Anvaya-CRM
 
 # Backend
 cd server
